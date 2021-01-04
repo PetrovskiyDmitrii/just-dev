@@ -1,0 +1,9 @@
+/**
+ * NameList types
+ */
+export const UPDATE_CURRENT_STATE = 'UPDATE_CURRENT_STATE';
+export const UPDATE_NAME_LIST = 'UPDATE_NAME_LIST';
+export const UPDATE_DATA_ID = 'UPDATE_DATA_ID';
+export const UPDATE_CURRENT_ID = 'UPDATE_CURRENT_ID';
+export const UPDATE_ACTIVE_STATE = 'UPDATE_ACTIVE_STATE';
+export const RESET_ALL = 'RESET_ALL';

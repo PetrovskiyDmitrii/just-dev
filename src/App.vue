@@ -4,7 +4,7 @@
     <h1 class="view-main__title">Lorem</h1>
     <input type="text" v-model="dataName">
     <button @click.prevent="getName">send</button>
-    <button>reset all</button>
+    <button @click.prevent="resetAll">reset all</button>
     <br>
     <p></p>
     <button>Ctrl+Z</button>
@@ -20,10 +20,10 @@
           </thead>
           <tbody>
             <tr
-              v-if="activeState"
+              v-if="getActiveState"
             >
-              <td>{{ activeState.id }}</td>
-              <td>{{ activeState.name }} </td>
+              <td>{{ getActiveState.id }}</td>
+              <td>{{ getActiveState.name }} </td>
             </tr>
           </tbody>
         </table>
@@ -37,15 +37,15 @@
               <th>Name</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="getNameList">
             <tr
-              v-for="id in dataList.currentState"
+              v-for="id in getCurrentState"
               :key="id"
             >
               <td  style="cursor: pointer" @click.prevent="moveToState(id)">{{ id }} |</td>
               <td>
                 <span>
-                  {{ dataList.nameList.find(nameList => nameList.id == id).name }}; 
+                  {{ getNameList.find(nameList => nameList.id == id).name }}; 
                 </span>
               </td>
             </tr>
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 import ViewHeader from './Components/ViewHeader';
 
 export default {
@@ -66,48 +67,23 @@ export default {
   },
   data() {
     return {
-      dataList: {
-        currentState: Array(),
-        nameList: Array()
-      },
-      activeState: null,
       dataName: null,
-      dataId: 1,
-      currentId: 0,
     }
   },
-  methods: {    
+  computed: mapGetters(['getActiveState', 'getCurrentState', 'getNameList']),
+  methods: {
+    ...mapActions(['update', 'getLastItem', 'moveToState', 'resetAll']),
+
     getName() {
       if (!this.dataName) return false;
 
-      const currentPosition = this.dataList.currentState.indexOf(this.currentId);
-      const cloneArray = this.dataList.currentState.slice(0, currentPosition + 1);
-
-      const data = {id: this.dataId, name: this.dataName};                
-      this.dataList.nameList.push(data);
-      cloneArray.push(this.dataId++);
-      this.dataList.currentState = cloneArray;
-      this.currentId = data.id;
-
-      this.getLastItem();
+      this.update({name: this.dataName})
       this.dataName = null;
-    },
-
-    getLastItem() {
-      const arrayLength = this.dataList.currentState.length;
-      const lastItem = this.dataList.currentState[arrayLength - 1];            
-      this.activeState = this.dataList.nameList.find(item => item.id == lastItem);    
-    },
-
-    moveToState(id) {
-      this.activeState = this.dataList.nameList.find(item => item.id == id);
-      this.currentId = id;
     }
   },
   created() {
     this.getLastItem();
-  }
-    
+  },
 }
 </script>
 
